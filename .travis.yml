@@ -19,10 +19,10 @@ script:
 
 # building the docker container images using Dockerfile in the relative folders for production build.
 after_success:
-  - docker build -t ganeshssac/multi-client ./client
-  - docker build -t ganeshssac/multi-nginx ./nginx
-  - docker build -t ganeshssac/multi-server ./server
-  - docker build -t ganeshssac/multi-worker ./worker
+  - docker build -t ganeshssac/multi-client-uat ./client
+  - docker build -t ganeshssac/multi-nginx-uat ./nginx
+  - docker build -t ganeshssac/multi-server-uat ./server
+  - docker build -t ganeshssac/multi-worker-uat  ./worker
 
 
   # Log in to the docker CLI
@@ -31,10 +31,10 @@ after_success:
 
   # Take the above images & push  to docker hub.
 
-  - docker push ganeshssac/multi-client
-  - docker push ganeshssac/multi-nginx
-  - docker push ganeshssac/multi-server
-  - docker push ganeshssac/multi-worker
+  - docker push ganeshssac/multi-client-uat
+  - docker push ganeshssac/multi-nginx-uat
+  - docker push ganeshssac/multi-server-uat
+  - docker push ganeshssac/multi-worker-uat
 
 
 
