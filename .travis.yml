@@ -1,0 +1,45 @@
+sudo: required
+services: 
+  - docker
+language: node_js
+node_js:
+  - "stable"
+
+
+# using the Dockerfile.dev to test run test cases 
+before_install: 
+  
+  - docker build -t ganeshssac/react-test -f ./client/Dockerfile.dev ./client
+
+
+script:
+  - docker run ganeshssac/react-test npm test -- --coverage
+
+# building the docker container images using Dockerfile in the relative folders for production build.
+after_success:
+  - docker build -t ganeshssac/multi-client ./client
+  - docker build -t ganeshssac/multi-nginx ./nginx
+  - docker build -t ganeshssac/multi-server ./server
+  - docker build -t ganeshssac/multi-worker ./worker
+
+
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+
+  # Take the above images & push  to docker hub.
+
+  - docker push ganeshssac/multi-client
+  - docker push ganeshssac/multi-nginx
+  - docker push ganeshssac/multi-server
+  - docker push ganeshssac/multi-worker
+
+
+
+
+
+
+
+
+
+  

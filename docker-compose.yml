@@ -1,0 +1,51 @@
+version: '3'
+services:
+  postgres: # postgresql container
+    image: 'postgres:latest'
+  redis: # redis container
+    image: 'redis:latest'
+  nginx: # nginx web server container
+    restart: always
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - '3050:80'
+  api: # runs the nodejs server container
+    depends_on:
+      - postgres
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    environment: # look at the hub.docker.com for settingup environment variables for postgres and redis.
+      - REDIS_HOST=redis
+      - REDIS-PORT=6379
+      - PGUSER=postgres
+      - PGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres_password 
+      - PGPORT=5432
+    
+  client: # runs the reactjs server container
+    build: 
+      context: ./client
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+  worker: # runs the worker container
+    environment:
+    - REDIS_HOST=redis
+    - REDIS_PORT=6379
+    build:
+      context: ./worker
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ./worker:/app
+
+  
+
